@@ -1,0 +1,4 @@
+.env
+*.log
+tmp_*.php
+tmp_*.sql
