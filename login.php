@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 $pageTitle = 'Login';
 session_start();
 

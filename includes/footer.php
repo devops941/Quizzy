@@ -1,4 +1,4 @@
-</main>
+/main>
 <footer class="text-center text-muted py-3 mt-4 border-top small">
     Quizzy © 2026 — Online Quiz System
 </footer>
