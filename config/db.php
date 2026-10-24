@@ -1,5 +1,6 @@
 <?php
-define('BASE_PATH', '/Quizzy');
+// Empty on Render/production (app is at root); '/Quizzy' on localhost XAMPP
+define('BASE_PATH', getenv('BASE_PATH') ?: (getenv('APP_ENV') === 'production' ? '' : '/Quizzy'));
 
 $db_host = getenv('DB_HOST') ?: 'localhost';
 $db_name = getenv('DB_NAME') ?: 'quizzy';
