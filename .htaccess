@@ -5,3 +5,16 @@ DirectoryIndex index.php
     RewriteEngine On
     RewriteBase /
 </IfModule>
+
+# Block direct access to SQL files
+<FilesMatch "\.sql$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Block direct access to config directory
+<IfModule mod_authz_core.c>
+    <Files "db.php">
+        Require all denied
+    </Files>
+</IfModule>

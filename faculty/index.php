@@ -55,166 +55,194 @@ try {
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
-<div class="row mb-5">
-    <div class="col-lg-12">
-        <h2 class="mb-1">
-            <i class="bi bi-speedometer2"></i> Faculty Dashboard
-        </h2>
-        <p class="text-muted">Welcome, <?php echo htmlspecialchars($user['name']); ?></p>
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-speedometer2"></i> Faculty Dashboard</h2>
+        <p class="text-muted mb-0">Welcome back, <strong><?php echo htmlspecialchars($user['name']); ?></strong></p>
+    </div>
+   
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="metric-card-modern theme-indigo">
+            <div class="metric-header">
+                <span class="metric-title">My Subjects</span>
+                <div class="metric-icon-box">
+                    <i class="bi bi-book-half"></i>
+                </div>
+            </div>
+            <div class="metric-value"><?php echo $subjectsCount; ?></div>
+            <div class="metric-trend">
+                <i class="bi bi-person-workspace"></i> Assigned Subjects
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="metric-card-modern theme-emerald">
+            <div class="metric-header">
+                <span class="metric-title">Questions</span>
+                <div class="metric-icon-box">
+                    <i class="bi bi-question-circle-fill"></i>
+                </div>
+            </div>
+            <div class="metric-value"><?php echo $questionsCount; ?></div>
+            <div class="metric-trend">
+                <i class="bi bi-collection-fill"></i> In Question Bank
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="metric-card-modern theme-amber">
+            <div class="metric-header">
+                <span class="metric-title">Total Quizzes</span>
+                <div class="metric-icon-box">
+                    <i class="bi bi-file-earmark-check-fill"></i>
+                </div>
+            </div>
+            <div class="metric-value"><?php echo $quizzesCount; ?></div>
+            <div class="metric-trend">
+                <i class="bi bi-check2-circle"></i> Created Assessments
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="metric-card-modern theme-cyan">
+            <div class="metric-header">
+                <span class="metric-title">Active Now</span>
+                <div class="metric-icon-box">
+                    <i class="bi bi-play-circle-fill"></i>
+                </div>
+            </div>
+            <div class="metric-value"><?php echo $activeCount; ?></div>
+            <div class="metric-trend">
+                <i class="bi bi-broadcast"></i> Live Quizzes
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="row mb-4 g-3">
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm text-center">
-            <div class="card-body">
-                <div class="mb-3">
-                    <i class="bi bi-book" style="font-size: 2.5rem; color: #4f46e5;"></i>
-                </div>
-                <h3 class="card-title mb-0"><?php echo $subjectsCount; ?></h3>
-                <p class="text-muted small mt-2">My Subjects</p>
+<div class="row g-3 mb-4">
+    <div class="col-12 col-md-4">
+        <a href="<?= BASE_PATH ?>/faculty/questions.php" class="faculty-quick-link">
+            <div class="fql-icon icon-indigo">
+                <i class="bi bi-question-circle-fill"></i>
             </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm text-center">
-            <div class="card-body">
-                <div class="mb-3">
-                    <i class="bi bi-question-circle" style="font-size: 2.5rem; color: #10b981;"></i>
-                </div>
-                <h3 class="card-title mb-0"><?php echo $questionsCount; ?></h3>
-                <p class="text-muted small mt-2">Total Questions</p>
+            <div class="fql-content">
+                <span class="fql-title">Question Bank</span>
+                <span class="fql-sub">Manage & create questions</span>
             </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm text-center">
-            <div class="card-body">
-                <div class="mb-3">
-                    <i class="bi bi-files" style="font-size: 2.5rem; color: #f59e0b;"></i>
-                </div>
-                <h3 class="card-title mb-0"><?php echo $quizzesCount; ?></h3>
-                <p class="text-muted small mt-2">Total Quizzes</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm text-center">
-            <div class="card-body">
-                <div class="mb-3">
-                    <i class="bi bi-play-circle" style="font-size: 2.5rem; color: #ef4444;"></i>
-                </div>
-                <h3 class="card-title mb-0"><?php echo $activeCount; ?></h3>
-                <p class="text-muted small mt-2">Active Now</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row mb-4 g-3">
-    <div class="col-md-4">
-        <a href="/faculty/questions.php" class="card border-0 shadow-sm text-decoration-none text-dark h-100 quick-link-card">
-            <div class="card-body text-center py-4">
-                <i class="bi bi-plus-circle" style="font-size: 2rem; color: #4f46e5; margin-bottom: 1rem; display: block;"></i>
-                <h5 class="card-title">Add Questions</h5>
-                <p class="text-muted small">Create or manage your question bank</p>
-            </div>
+            <i class="bi bi-chevron-right fql-arrow"></i>
         </a>
     </div>
-    <div class="col-md-4">
-        <a href="/faculty/create_quiz.php" class="card border-0 shadow-sm text-decoration-none text-dark h-100 quick-link-card">
-            <div class="card-body text-center py-4">
-                <i class="bi bi-pencil-square" style="font-size: 2rem; color: #10b981; margin-bottom: 1rem; display: block;"></i>
-                <h5 class="card-title">Create Quiz</h5>
-                <p class="text-muted small">Design and schedule new quizzes</p>
+    <div class="col-12 col-md-4">
+        <a href="<?= BASE_PATH ?>/faculty/create_quiz.php" class="faculty-quick-link">
+            <div class="fql-icon icon-emerald">
+                <i class="bi bi-plus-square-fill"></i>
             </div>
+            <div class="fql-content">
+                <span class="fql-title">Create Quiz</span>
+                <span class="fql-sub">Design & schedule new tests</span>
+            </div>
+            <i class="bi bi-chevron-right fql-arrow"></i>
         </a>
     </div>
-    <div class="col-md-4">
-        <a href="/faculty/results.php" class="card border-0 shadow-sm text-decoration-none text-dark h-100 quick-link-card">
-            <div class="card-body text-center py-4">
-                <i class="bi bi-graph-up" style="font-size: 2rem; color: #f59e0b; margin-bottom: 1rem; display: block;"></i>
-                <h5 class="card-title">View Results</h5>
-                <p class="text-muted small">Check student performance and scores</p>
+    <div class="col-12 col-md-4">
+        <a href="<?= BASE_PATH ?>/faculty/results.php" class="faculty-quick-link">
+            <div class="fql-icon icon-amber">
+                <i class="bi bi-bar-chart-line-fill"></i>
             </div>
+            <div class="fql-content">
+                <span class="fql-title">View Results</span>
+                <span class="fql-sub">Review student performance</span>
+            </div>
+            <i class="bi bi-chevron-right fql-arrow"></i>
         </a>
     </div>
 </div>
 
-<div class="row mt-5">
-    <div class="col-lg-12">
-        <h4 class="mb-3">
-            <i class="bi bi-clock-history"></i> Recent Quizzes
-        </h4>
-        <?php if (!empty($recentQuizzes)): ?>
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
+<div class="card border-0 shadow-sm overflow-hidden mb-4">
+    <div class="card-header bg-white border-bottom p-3 d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-clock-history text-primary fs-5"></i>
+            <span class="fw-bold text-dark fs-6">Recent Quizzes Overview</span>
+        </div>
+        <a href="<?= BASE_PATH ?>/faculty/create_quiz.php" class="btn btn-sm btn-outline-primary">View All Quizzes</a>
+    </div>
+    <?php if (!empty($recentQuizzes)): ?>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Quiz Title</th>
+                        <th>Subject</th>
+                        <th>Duration</th>
+                        <th>Attempts</th>
+                        <th>Avg Score</th>
+                        <th class="pe-4 text-end">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $nowStr = $pdo->query("SELECT NOW() as now")->fetch()['now'];
+                    $now = new DateTime($nowStr);
+                    foreach ($recentQuizzes as $quiz): ?>
                         <tr>
-                            <th>Quiz Title</th>
-                            <th>Subject</th>
-                            <th>Duration</th>
-                            <th>Attempts</th>
-                            <th>Avg Score</th>
-                            <th>Status</th>
+                            <td class="ps-4">
+                                <div class="fw-bold text-dark"><?php echo htmlspecialchars($quiz['title']); ?></div>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border">
+                                    <i class="bi bi-book me-1 text-primary"></i><?php echo htmlspecialchars($quiz['subject_name']); ?>
+                                </span>
+                            </td>
+                            <td>
+                                <small class="text-muted font-monospace"><?php echo $quiz['duration_min']; ?> mins</small>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border"><?php echo (int)$quiz['attempt_count']; ?></span>
+                            </td>
+                            <td>
+                                <?php if ($quiz['avg_score'] !== null): ?>
+                                    <strong class="text-primary"><?php echo number_format($quiz['avg_score'], 1); ?></strong>
+                                <?php else: ?>
+                                    <span class="text-muted">—</span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="pe-4 text-end">
+                                <?php
+                                $start = new DateTime($quiz['start_time']);
+                                $end   = new DateTime($quiz['end_time']);
+                                if ($now < $start) {
+                                    echo '<span class="badge bg-info-pale text-info border border-info-subtle px-2 py-1"><i class="bi bi-hourglass-split me-1"></i>Upcoming</span>';
+                                } elseif ($now >= $start && $now <= $end) {
+                                    echo '<span class="badge bg-success-pale text-success border border-success-subtle px-2 py-1"><i class="bi bi-play-circle-fill me-1"></i>Active</span>';
+                                } else {
+                                    echo '<span class="badge bg-light text-muted border px-2 py-1">Closed</span>';
+                                }
+                                ?>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($recentQuizzes as $quiz): ?>
-                            <tr>
-                                <td>
-                                    <strong><?php echo htmlspecialchars($quiz['title']); ?></strong>
-                                </td>
-                                <td><?php echo htmlspecialchars($quiz['subject_name']); ?></td>
-                                <td><?php echo $quiz['duration_min']; ?> min</td>
-                                <td><?php echo (int)$quiz['attempt_count']; ?></td>
-                                <td>
-                                    <?php
-                                    if ($quiz['avg_score'] !== null) {
-                                        echo '<strong>' . number_format($quiz['avg_score'], 2) . '</strong>';
-                                    } else {
-                                        echo '<span class="text-muted">—</span>';
-                                    }
-                                    ?>
-                                </td>
-                                <td>
-                                    <?php
-                                    $nowStr = $pdo->query("SELECT NOW() as now")->fetch()['now'];
-                                    $now = new DateTime($nowStr);
-                                    $start = new DateTime($quiz['start_time']);
-                                    $end = new DateTime($quiz['end_time']);
-
-                                    if ($now < $start) {
-                                        echo '<span class="badge bg-info">Upcoming</span>';
-                                    } elseif ($now >= $start && $now <= $end) {
-                                        echo '<span class="badge bg-danger">Active</span>';
-                                    } else {
-                                        echo '<span class="badge bg-secondary">Closed</span>';
-                                    }
-                                    ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php else: ?>
+        <div class="empty-state-modern">
+            <div class="empty-state-icon-box">
+                <i class="bi bi-journal-plus"></i>
             </div>
-        <?php else: ?>
-            <div class="alert alert-info">
-                <i class="bi bi-info-circle"></i> No quizzes created yet. <a href="/faculty/create_quiz.php">Create your first quiz</a>
-            </div>
-        <?php endif; ?>
-    </div>
+            <h5 class="fw-bold text-dark mb-1">No Quizzes Created Yet</h5>
+            <p class="text-muted small mb-4" style="max-width: 440px; margin-inline: auto;">
+                Launch your first interactive assessment, configure questions, set timers, and track student scores seamlessly.
+            </p>
+            <a href="<?= BASE_PATH ?>/faculty/create_quiz.php" class="btn-create-quiz-cta">
+                <i class="bi bi-plus-lg"></i>
+                <span>Create First Quiz</span>
+                <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+    <?php endif; ?>
 </div>
-
-<style>
-.quick-link-card {
-    transition: all 0.3s ease;
-}
-
-.quick-link-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 24px rgba(79, 70, 229, 0.15) !important;
-}
-</style>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

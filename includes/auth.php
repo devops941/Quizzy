@@ -25,7 +25,7 @@ function getFlash(): ?array {
 function requireRole(string|array $roles): void {
     if (!isLoggedIn()) {
         setFlash('danger', 'Please login first');
-        header('Location: /login.php');
+        header('Location: ' . BASE_PATH . '/login.php');
         exit;
     }
 
@@ -34,7 +34,7 @@ function requireRole(string|array $roles): void {
 
     if (!in_array($userRole, $rolesArray, true)) {
         setFlash('danger', 'Access denied');
-        header('Location: /login.php');
+        header('Location: ' . BASE_PATH . '/login.php');
         exit;
     }
 }

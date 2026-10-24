@@ -22,8 +22,16 @@ try {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv_file'])) {
     $selectedSubjectId = isset($_POST['subject_id']) ? (int)$_POST['subject_id'] : 0;
 
-    if ($selectedSubjectId <= 0) {
-        $error = 'Please select a subject.';
+    // Verify the subject belongs to the logged-in faculty
+    $subjectOwned = false;
+    if ($selectedSubjectId > 0) {
+        $chk = $pdo->prepare('SELECT 1 FROM subjects WHERE subject_id = ? AND faculty_id = ?');
+        $chk->execute([$selectedSubjectId, $userId]);
+        $subjectOwned = (bool)$chk->fetch();
+    }
+
+    if ($selectedSubjectId <= 0 || !$subjectOwned) {
+        $error = $selectedSubjectId <= 0 ? 'Please select a subject.' : 'Unauthorized: subject does not belong to you.';
     } elseif ($_FILES['csv_file']['error'] !== UPLOAD_ERR_OK) {
         $error = 'File upload error. Please try again.';
     } else {
@@ -53,9 +61,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv_file'])) {
                     continue;
                 }
 
-                if (count($row) < 7) {
+                if (count($row) < 6) {
                     $uploadResults['skipped']++;
-                    $uploadResults['errors'][] = "Row $rowNum: Missing columns (need 7)";
+                    $uploadResults['errors'][] = "Row $rowNum: Missing columns (need at least 6)";
                     continue;
                 }
 
@@ -65,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv_file'])) {
                 $option_c = trim($row[3]);
                 $option_d = trim($row[4]);
                 $correct_option = strtoupper(trim($row[5]));
-                $difficulty = strtolower(trim($row[6]));
+                $difficulty = isset($row[6]) && in_array(strtolower(trim($row[6])), ['easy', 'medium', 'hard']) ? strtolower(trim($row[6])) : 'medium';
 
                 $validationErrors = [];
 
@@ -86,9 +94,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv_file'])) {
                 }
                 if (!in_array($correct_option, ['A', 'B', 'C', 'D'])) {
                     $validationErrors[] = "Correct option must be A, B, C, or D (got: $correct_option)";
-                }
-                if (!in_array($difficulty, ['easy', 'medium', 'hard'])) {
-                    $validationErrors[] = "Difficulty must be easy, medium, or hard (got: $difficulty)";
                 }
 
                 if (!empty($validationErrors)) {
@@ -230,7 +235,7 @@ require_once __DIR__ . '/../includes/header.php';
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-cloud-upload"></i> Upload CSV
                         </button>
-                        <a href="/faculty/questions.php" class="btn btn-secondary">
+                        <a href="<?= BASE_PATH ?>/faculty/questions.php" class="btn btn-secondary">
                             <i class="bi bi-arrow-left"></i> Back to Questions
                         </a>
                     </div>
@@ -246,7 +251,7 @@ require_once __DIR__ . '/../includes/header.php';
             </div>
             <div class="card-body">
                 <p class="small mb-3">
-                    Your CSV file must have exactly <strong>7 columns</strong> (no header row will be skipped, include headers):
+                    Your CSV file must have exactly <strong>6 columns</strong> (no header row will be skipped, include headers):
                 </p>
                 <div class="table-responsive mb-3">
                     <table class="table table-sm table-bordered">
@@ -281,10 +286,6 @@ require_once __DIR__ . '/../includes/header.php';
                                 <td><strong>6</strong></td>
                                 <td>Correct option (A/B/C/D)</td>
                             </tr>
-                            <tr>
-                                <td><strong>7</strong></td>
-                                <td>Difficulty (easy/medium/hard)</td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -293,9 +294,9 @@ require_once __DIR__ . '/../includes/header.php';
                     <strong>Example CSV content:</strong>
                 </p>
                 <div style="background-color: #f9fafb; padding: 1rem; border-radius: 0.5rem; font-family: monospace; font-size: 0.75rem; overflow-x: auto;">
-                    <code>What is 2+2?,"A: 3","B: 4","C: 5","D: 6",B,easy<br>
-What is the capital of France?,"A: London","B: Paris","C: Berlin","D: Madrid",B,easy<br>
-Explain quantum entanglement.,"A: False correlation","B: Spooky action at a distance","C: Time travel","D: Parallel universes",B,hard</code>
+                    <code>What is 2+2?,"A: 3","B: 4","C: 5","D: 6",B<br>
+What is the capital of France?,"A: London","B: Paris","C: Berlin","D: Madrid",B<br>
+Explain quantum entanglement.,"A: False correlation","B: Spooky action at a distance","C: Time travel","D: Parallel universes",B</code>
                 </div>
 
                 <div class="mt-3">
@@ -312,15 +313,15 @@ Explain quantum entanglement.,"A: False correlation","B: Spooky action at a dist
 document.getElementById('downloadSampleBtn').addEventListener('click', function(e) {
     e.preventDefault();
 
-    const csvContent = `question_text,option_a,option_b,option_c,option_d,correct_option,difficulty
-"What is 2+2?","A: 3","B: 4","C: 5","D: 6",B,easy
-"What is the capital of France?","A: London","B: Paris","C: Berlin","D: Madrid",B,easy
-"Which planet is closest to the sun?","A: Venus","B: Mercury","C: Earth","D: Mars",B,medium
-"What is the largest ocean on Earth?","A: Atlantic","B: Indian","C: Pacific","D: Arctic",C,easy
-"Who wrote Romeo and Juliet?","A: Jane Austen","B: William Shakespeare","C: Charles Dickens","D: Mark Twain",B,medium
-"What is the chemical symbol for Gold?","A: Go","B: Gd","C: Au","D: Ag",C,medium
-"Explain quantum entanglement in simple terms.","A: Particles connected by secret signals","B: Correlated states that seem instantaneous","C: Impossible to achieve in practice","D: Only works for electrons",B,hard
-"Calculate the derivative of x^3","A: 3x^2","B: 3x","C: x^2","D: x^3/3",A,hard`;
+    const csvContent = `question_text,option_a,option_b,option_c,option_d,correct_option
+"What is 2+2?","A: 3","B: 4","C: 5","D: 6",B
+"What is the capital of France?","A: London","B: Paris","C: Berlin","D: Madrid",B
+"Which planet is closest to the sun?","A: Venus","B: Mercury","C: Earth","D: Mars",B
+"What is the largest ocean on Earth?","A: Atlantic","B: Indian","C: Pacific","D: Arctic",C
+"Who wrote Romeo and Juliet?","A: Jane Austen","B: William Shakespeare","C: Charles Dickens","D: Mark Twain",B
+"What is the chemical symbol for Gold?","A: Go","B: Gd","C: Au","D: Ag",C
+"Explain quantum entanglement in simple terms.","A: Particles connected by secret signals","B: Correlated states that seem instantaneous","C: Impossible to achieve in practice","D: Only works for electrons",B
+"Calculate the derivative of x^3","A: 3x^2","B: 3x","C: x^2","D: x^3/3",A`;
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');

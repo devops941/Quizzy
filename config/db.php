@@ -1,4 +1,6 @@
 <?php
+define('BASE_PATH', '/Quizzy');
+
 $db_host = getenv('DB_HOST') ?: 'localhost';
 $db_name = getenv('DB_NAME') ?: 'quizzy';
 $db_user = getenv('DB_USER') ?: 'root';
@@ -23,5 +25,7 @@ try {
         ]
     );
 } catch (PDOException $e) {
-    die("Database connection failed: " . htmlspecialchars($e->getMessage()));
+    error_log('Database connection failed: ' . $e->getMessage());
+    http_response_code(500);
+    die("A system error occurred. Please contact support.");
 }

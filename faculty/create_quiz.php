@@ -156,7 +156,7 @@ try {
         INNER JOIN subjects s ON q.subject_id = s.subject_id
         LEFT JOIN attempts a ON q.quiz_id = a.quiz_id
         WHERE s.faculty_id = ?
-        GROUP BY q.quiz_id
+        GROUP BY q.quiz_id, q.title, s.name, q.start_time, q.end_time, q.num_questions
         ORDER BY q.start_time DESC
     ');
     $stmt->execute([$user['id']]);
@@ -347,19 +347,27 @@ require_once __DIR__ . '/../includes/header.php';
                                 <td><?php echo $q['attempt_count']; ?></td>
                                 <td><small><?php echo date('M d, Y H:i', strtotime($q['start_time'])); ?></small></td>
                                 <td>
-                                    <a href="?quiz_id=<?php echo $q['quiz_id']; ?>" class="btn btn-sm btn-outline-primary" title="Edit">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a href="/faculty/results.php?quiz_id=<?php echo $q['quiz_id']; ?>" class="btn btn-sm btn-outline-success" title="View Results">
-                                        <i class="bi bi-bar-chart"></i>
-                                    </a>
-                                    <?php if ($q['attempt_count'] == 0): ?>
-                                        <form method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this quiz?');"><input type="hidden" name="action" value="delete_quiz"><input type="hidden" name="quiz_id" value="<?php echo $q['quiz_id']; ?>"><button type="submit" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></button></form>
-                                    <?php else: ?>
-                                        <button class="btn btn-sm btn-outline-danger" disabled title="Cannot delete quiz with attempts">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    <?php endif; ?>
+                                    <div class="action-btn-group">
+                                        <a href="?quiz_id=<?php echo $q['quiz_id']; ?>" class="btn-action btn-action-edit" title="Edit Quiz">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <a href="<?= BASE_PATH ?>/faculty/results.php?quiz_id=<?php echo $q['quiz_id']; ?>" class="btn-action btn-action-view" title="View Results">
+                                            <i class="bi bi-bar-chart-line"></i>
+                                        </a>
+                                        <?php if ($q['attempt_count'] == 0): ?>
+                                            <form method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this quiz?');">
+                                                <input type="hidden" name="action" value="delete_quiz">
+                                                <input type="hidden" name="quiz_id" value="<?php echo $q['quiz_id']; ?>">
+                                                <button type="submit" class="btn-action btn-action-delete" title="Delete Quiz">
+                                                    <i class="bi bi-trash3"></i>
+                                                </button>
+                                            </form>
+                                        <?php else: ?>
+                                            <button class="btn-action btn-action-delete" disabled title="Cannot delete quiz with attempts">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        <?php endif; ?>
+                                    </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -378,7 +386,7 @@ function updateQuestionCount() {
     if (selectedOption.value) {
         const subjectId = parseInt(selectedOption.value);
 
-        fetch('/faculty/get_question_count.php?subject_id=' + subjectId)
+        fetch('<?= BASE_PATH ?>/faculty/get_question_count.php?subject_id=' + subjectId)
             .then(response => response.json())
             .then(data => {
                 const maxQuestionsHint = document.getElementById('max-questions-hint');

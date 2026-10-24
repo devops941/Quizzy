@@ -84,14 +84,14 @@ try {
         exit;
     }
 
-    // Validate quiz is active
-    if ($quiz['not_started_yet']) {
+    // Validate quiz is active (cast to int: MySQL returns '0'/'1' strings which are truthy in PHP)
+    if ((int)$quiz['not_started_yet']) {
         $_SESSION['flash'] = ['type' => 'warning', 'msg' => 'This quiz has not started yet.'];
         header('Location: dashboard.php');
         exit;
     }
 
-    if ($quiz['has_expired']) {
+    if ((int)$quiz['has_expired']) {
         $_SESSION['flash'] = ['type' => 'warning', 'msg' => 'This quiz has expired.'];
         header('Location: dashboard.php');
         exit;
@@ -202,76 +202,6 @@ try {
 }
 ?>
 
-<style>
-    .quiz-timer {
-        position: sticky;
-        top: 70px;
-        background: white;
-        border: 2px solid #4f46e5;
-        border-radius: 8px;
-        padding: 15px 20px;
-        margin-bottom: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        z-index: 100;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .quiz-timer.timer-critical {
-        background: #fff3cd;
-        border-color: #ff6b6b;
-    }
-
-    .timer-info {
-        flex: 1;
-    }
-
-    .timer-value {
-        font-size: 28px;
-        font-weight: bold;
-        color: #4f46e5;
-        margin: 0;
-    }
-
-    .quiz-timer.timer-critical .timer-value {
-        color: #ff6b6b;
-    }
-
-    .timer-label {
-        font-size: 12px;
-        color: #666;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-top: 2px;
-    }
-
-    .option-label {
-        display: block;
-        padding: 12px 15px;
-        margin-bottom: 10px;
-        border: 2px solid #e0e0e0;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.3s;
-        background: #f8f9fa;
-    }
-
-    .option-label:hover {
-        border-color: #4f46e5;
-        background: #f0f0ff;
-    }
-
-    .option-label input[type="radio"] {
-        margin-right: 10px;
-    }
-
-    .option-label.selected {
-        background: #e8eaff;
-        border-color: #4f46e5;
-        font-weight: 500;
-    }
-</style>
 
 <div class="quiz-timer">
     <div class="timer-info">
@@ -281,7 +211,7 @@ try {
 </div>
 
 <div class="row">
-    <div class="col-lg-8 mx-auto">
+    <div class="col-lg-9 col-xl-8">
         <div class="card border-0 shadow-sm mb-4">
             <div class="card-body">
                 <h3 class="mb-2"><?php echo htmlspecialchars($quiz['title']); ?></h3>
@@ -296,7 +226,7 @@ try {
                 <h5 class="mb-4"><?php echo htmlspecialchars($currentQuestion['question_text']); ?></h5>
 
                 <form id="answerForm" method="POST" action="attempt.php" class="mb-4">
-                    <input type="hidden" name="action" value="answer">
+                    <input type="hidden" name="action" value="save_answer">
                     <input type="hidden" name="quiz_id" value="<?php echo $quizId; ?>">
                     <input type="hidden" name="attempt_id" value="<?php echo $attempt['attempt_id']; ?>">
                     <input type="hidden" name="question_id" value="<?php echo $currentQuestionId; ?>">
@@ -323,7 +253,7 @@ try {
                         ?>
                         <label class="option-label <?php if ($selectedOption === $displayOpt) echo 'selected'; ?>">
                             <input type="radio" name="selected_option" value="<?php echo $displayOpt; ?>"
-                                   <?php if ($selectedOption === $displayOpt) echo 'checked'; ?> onchange="autoSaveAnswer()">
+                                   <?php if ($selectedOption === $displayOpt) echo 'checked'; ?> onchange="saveCurrentAnswer()">
                             <span><?php echo htmlspecialchars($optionTexts[$displayOpt]); ?></span>
                         </label>
                         <?php endforeach; ?>

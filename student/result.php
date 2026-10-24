@@ -81,52 +81,55 @@ try {
 ?>
 
 <div class="row">
-    <div class="col-lg-8 mx-auto">
-        <div class="card border-0 shadow-lg mb-4">
-            <div class="card-body text-center py-5">
-                <h2 class="mb-4"><?php echo htmlspecialchars($attempt['title']); ?></h2>
+    <div class="col-lg-9 col-xl-8">
+        <div class="card border-0 shadow-lg mb-4 text-center">
+            <div class="card-body py-5 px-4">
+                <span class="badge bg-primary-pale text-primary text-uppercase px-3 py-2 mb-3 fw-bold" style="letter-spacing: 0.05em;">Exam Completion Summary</span>
+                <h2 class="mb-4 fw-800"><?php echo htmlspecialchars($attempt['title']); ?></h2>
+
+                <div class="score-ring mb-4">
+                    <div class="score-num"><?php echo number_format($attempt['score'], 1); ?></div>
+                    <div class="score-denom">of <?php echo number_format($totalPossible, 1); ?> pts</div>
+                </div>
 
                 <div class="mb-4">
-                    <div style="font-size: 48px; font-weight: bold; color: #4f46e5; margin-bottom: 10px;">
-                        <?php echo number_format($attempt['score'], 2); ?>
-                    </div>
-                    <div style="font-size: 16px; color: #666; margin-bottom: 15px;">
-                        out of <?php echo number_format($totalPossible, 2); ?>
-                    </div>
-
                     <?php if ($percentage >= 80): ?>
-                        <div style="color: #28a745; font-size: 18px; font-weight: 500;">
-                            <i class="bi bi-check-circle"></i> Excellent!
-                        </div>
+                        <span class="badge bg-success-pale text-success fs-6 px-3 py-2 rounded-pill">
+                            <i class="bi bi-patch-check-fill me-1"></i> Excellent Performance (<?php echo number_format($percentage, 1); ?>%)
+                        </span>
                     <?php elseif ($percentage >= 60): ?>
-                        <div style="color: #17a2b8; font-size: 18px; font-weight: 500;">
-                            <i class="bi bi-info-circle"></i> Good
-                        </div>
+                        <span class="badge bg-info-pale text-info fs-6 px-3 py-2 rounded-pill">
+                            <i class="bi bi-info-circle-fill me-1"></i> Good Attempt (<?php echo number_format($percentage, 1); ?>%)
+                        </span>
                     <?php else: ?>
-                        <div style="color: #ffc107; font-size: 18px; font-weight: 500;">
-                            <i class="bi bi-exclamation-circle"></i> Needs Improvement
-                        </div>
+                        <span class="badge bg-warning-pale text-warning fs-6 px-3 py-2 rounded-pill">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i> Needs Improvement (<?php echo number_format($percentage, 1); ?>%)
+                        </span>
                     <?php endif; ?>
                 </div>
 
-                <p class="text-muted mb-0">
+                <p class="text-muted small mb-0">
                     <i class="bi bi-calendar-event me-2"></i>
                     Submitted on <?php echo date('M d, Y h:i A', strtotime($attempt['submitted_at'])); ?>
                 </p>
             </div>
         </div>
 
-        <div class="progress mb-4" style="height: 25px;">
-            <?php
-                $barClass = 'bg-success';
-                if ($percentage < 60) {
-                    $barClass = 'bg-danger';
-                } elseif ($percentage < 80) {
-                    $barClass = 'bg-info';
-                }
-            ?>
-            <div class="progress-bar <?php echo $barClass; ?>" style="width: <?php echo $percentage; ?>%; font-size: 14px; line-height: 25px;">
-                <?php echo number_format($percentage, 1); ?>%
+        <div class="card border-0 shadow-sm p-3 mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="fw-bold small text-muted text-uppercase">Score Accuracy</span>
+                <span class="fw-bold text-primary"><?php echo number_format($percentage, 1); ?>%</span>
+            </div>
+            <div class="progress" style="height: 12px;">
+                <?php
+                    $barClass = 'bg-success';
+                    if ($percentage < 60) {
+                        $barClass = 'bg-danger';
+                    } elseif ($percentage < 80) {
+                        $barClass = 'bg-info';
+                    }
+                ?>
+                <div class="progress-bar <?php echo $barClass; ?>" role="progressbar" style="width: <?php echo $percentage; ?>%;"></div>
             </div>
         </div>
 
